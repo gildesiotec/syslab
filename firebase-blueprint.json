@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "name": { "type": "string", "description": "Full name" },
+        "email": { "type": "string", "format": "email", "description": "Email address" },
+        "role": { "type": "string", "enum": ["admin", "patient"], "description": "User role" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation date" }
+      },
+      "required": ["uid", "name", "email", "role"]
+    },
+    "Patient": {
+      "title": "Patient",
+      "description": "Patient profile details",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "cpf": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "userId": { "type": "string", "description": "Reference to User entity" },
+        "street": { "type": "string" },
+        "number": { "type": "string" },
+        "complement": { "type": "string" },
+        "neighborhood": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "zipCode": { "type": "string" }
+      },
+      "required": ["name", "cpf", "email"]
+    },
+    "Exam": {
+      "title": "Exam",
+      "description": "Exam result record",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string" },
+        "examName": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "available"] },
+        "fileUrl": { "type": "string", "description": "Primary file URL (backward compatibility)" },
+        "fileName": { "type": "string", "description": "Primary file name (backward compatibility)" },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string" },
+              "name": { "type": "string" }
+            }
+          }
+        },
+        "uploadedBy": { "type": "string" },
+        "observations": { "type": "string" }
+      },
+      "required": ["patientId", "examName", "date", "status"]
+    },
+    "Log": {
+      "title": "Log",
+      "description": "System activity logs",
+      "type": "object",
+      "properties": {
+        "action": { "type": "string" },
+        "userId": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "details": { "type": "string" }
+      },
+      "required": ["action", "userId", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profiles" },
+    "/patients/{patientId}": { "schema": "Patient", "description": "Patient records" },
+    "/exams/{examId}": { "schema": "Exam", "description": "Exam results" },
+    "/logs/{logId}": { "schema": "Log", "description": "Activity logs" }
+  }
+}
